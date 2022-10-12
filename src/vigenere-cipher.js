@@ -24,27 +24,21 @@ const { NotImplementedError } = require('../extensions/index.js');
 this.type=type
   }
   encrypt(message,key) {
+    
     if(!message || !key){
       throw new Error("Incorrect arguments!")
     }
-   if(this.type){
+    message=message.toLowerCase()
+    key=key.toLowerCase()
+   
 let result=[]
 let keyLong=key.repeat(Math.ceil(message.length/key.length))
 let i=0
 let k=0
-let index=65
+let index=97
      while(i<message.length){
-       if(message[i].charCodeAt()>=65 && message[i].charCodeAt()<=90){
-         index=65
-       }
-       if(message[i].charCodeAt()>=97 && message[i].charCodeAt()<=122){
-         index=97
-       }
-       let a=message[i].charCodeAt() +keyLong[k].charCodeAt()-index
-       // console.log(index)
-       
-       
-       if(message[i].charCodeAt() - index >26 || message[i].charCodeAt() - index < 0){
+             let a=message[i].charCodeAt()+keyLong[k].charCodeAt()-index
+                    if(message[i].charCodeAt() - index >26 || message[i].charCodeAt() - index < 0){
          result.push(message[i])
          i++
        }
@@ -53,20 +47,58 @@ let index=65
          i++
        }
        else{
-       result.push(String.fromCharCode(a> 25 ? a-26 : a))
+       result.push(String.fromCharCode(a> (index+25) ? a-26 : a))
        i++
        k++
        }
-     }
-     console.log(result)
+             }
+     if(this.type){
+      console.log(result.join('').toUpperCase())
+      return result.join('').toUpperCase() 
+   }
+   if(!this.type){
+     console.log(result.reverse().join('').toUpperCase())
+    return result.reverse().join('').toUpperCase() 
    }
   }
   decrypt(encryptedMessage, key) {
     if(!encryptedMessage || !key){
       throw new Error("Incorrect arguments!")
     }
-
-    
+    if(!this.type){
+      encryptedMessage= encryptedMessage.split('').reverse().join('')
+    }
+ encryptedMessage=encryptedMessage.toLowerCase()
+    key=key.toLowerCase()
+    let result=[]
+let keyLong=key.repeat(Math.ceil(encryptedMessage.length/key.length))
+let i=0
+let k=0
+let index=97
+while(i<encryptedMessage.length){
+             let a=encryptedMessage[i].charCodeAt()-keyLong[k].charCodeAt()+index
+                    if(encryptedMessage[i].charCodeAt() - index >26 || encryptedMessage[i].charCodeAt() - index < 0){
+         result.push(encryptedMessage[i])
+         i++
+       }
+       // else  if(index===97 && (encryptedMessage[i].charCodeAt()<96 || encryptedMessage[i].charCodeAt()>122)){
+       //   result.push(encryptedMessage[i])
+       //   i++
+       // }
+       else{
+       result.push(String.fromCharCode(a< (index) ? a+26 : a))
+       i++
+       k++
+       }
+             }
+    if(this.type){
+      console.log(result.join('').toUpperCase())
+      return result.join('').toUpperCase() 
+   }
+   if(!this.type){
+     console.log(result.reverse().join('').toUpperCase())
+    return result.join('').toUpperCase()
+   } 
   }
 }
 module.exports = {
